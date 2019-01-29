@@ -3,7 +3,7 @@ import {Express} from 'express';
 import {HTTP_PORT} from './env';
 import {setupExpress} from './middleware';
 type ExpressCallback = (app: Express) => void;
-let getApplicationCallback: ExpressCallback | undefined = undefined;
+let getApplicationCallback: ExpressCallback | undefined;
 let isRunning = false;
 const app = express();
 // keep this base file clean and use setupExpress to configure Express
@@ -26,8 +26,8 @@ export const getExpress = (): Promise<Express> => {
 		return Promise.resolve(app);
 	} else {
 		return new Promise((resolve, reject) => {
-			getApplicationCallback = function(app) {
-				resolve(app);
+			getApplicationCallback = (currentApp) => {
+				resolve(currentApp);
 			};
 		});
 	}
