@@ -11,6 +11,7 @@ setupExpress(app);
 // listener
 app.listen(HTTP_PORT, () => {
 	if (process.env.NODE_ENV !== 'testing') {
+		/* istanbul ignore next */
 		console.log(`[${process.env.NODE_ENV}] service listening on port ${HTTP_PORT}`);
 	}
 	isRunning = true;

@@ -22,7 +22,9 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.26",
     "chai-http": "^4.2.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
+    "source-map-support": "^0.5.10"
   },
   "scripts": {
     "ts-watch": "tsc -w",
@@ -30,13 +32,26 @@
     "node-watch": "cross-env NODE_ENV=development nodemon --delay 250 --watch dist ./dist/service.js",
     "dev": "npm-run-all -p ts-watch node-watch",
     "mocha": "mocha",
-    "test": "mocha --exit -r ts-node/register test/*.ts",
+    "test": "nyc mocha test/*.ts",
     "start": "cross-env NODE_ENV=production node ./dist/service.js",
     "build": "npm run ts-build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mharj/express-base-api-ts.git"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "all": true
   },
   "author": "",
   "license": "ISC",

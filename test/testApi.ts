@@ -9,18 +9,20 @@ import {getExpress} from '../src/service';
 let app: Express | undefined;
 
 chai.use(chaiHttp);
-describe('hello api', () => {
+describe('api', () => {
 	before(async () => {
 		app = await getExpress();
 	});
-	it('should get hello world', (done) => {
-		chai
-			.request(app)
-			.get('/api/hello')
-			.end((err, res) => {
-				expect(res).to.have.status(200);
-				expect(JSON.stringify(res.body)).to.be.equal(JSON.stringify({msg: 'hello world'}));
-				done();
-			});
+	describe('hello', () => {
+		it('should get hello world', (done) => {
+			chai
+				.request(app)
+				.get('/api/hello')
+				.end((err, res) => {
+					expect(res).to.have.status(200);
+					expect(JSON.stringify(res.body)).to.be.equal(JSON.stringify({msg: 'hello world'}));
+					done();
+				});
+		});
 	});
 });
