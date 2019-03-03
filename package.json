@@ -1,62 +1,62 @@
 {
-  "name": "express-base-api-ts",
-  "version": "0.0.1",
-  "description": "",
-  "main": "dist/service.js",
-  "dependencies": {
-    "chai": "^4.2.0",
-    "cross-env": "^5.2.0",
-    "cross-fetch": "^3.0.1",
-    "express": "^4.16.4",
-    "nodemon": "^1.18.10",
-    "npm-run-all": "^4.1.5",
-    "ts-node": "^8.0.2",
-    "tslib": "^1.9.3",
-    "tslint": "^5.13.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.3333"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/express": "^4.16.1",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^11.10.4",
-    "chai-http": "^4.2.1",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
-    "source-map-support": "^0.5.10"
-  },
-  "scripts": {
-    "ts-watch": "tsc -w",
-    "ts-build": "tsc",
-    "node-watch": "cross-env NODE_ENV=development nodemon --delay 250 --watch dist ./dist/service.js",
-    "dev": "npm-run-all -p ts-watch node-watch",
-    "mocha": "mocha",
-    "test": "nyc mocha test/*.ts",
-    "start": "cross-env NODE_ENV=production node ./dist/service.js",
-    "build": "npm run ts-build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mharj/express-base-api-ts.git"
-  },
-  "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "src"
-    ],
-    "reporter": [
-      "text",
-      "html"
-    ],
-    "all": true
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mharj/express-base-api-ts/issues"
-  },
-  "homepage": "https://github.com/mharj/express-base-api-ts#readme"
+	"name": "express-base-api-ts",
+	"version": "0.0.1",
+	"description": "",
+	"main": "dist/service.js",
+	"dependencies": {
+		"cross-env": "^5.2.0",
+		"cross-fetch": "^3.0.1",
+		"express": "^4.16.4",
+		"tslib": "^1.9.3"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.1.7",
+		"@types/express": "^4.16.1",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^11.10.4",
+		"chai": "^4.2.0",
+		"chai-http": "^4.2.1",
+		"mocha": "^6.0.2",
+		"nodemon": "^1.18.10",
+		"npm-run-all": "^4.1.5",
+		"nyc": "^13.3.0",
+		"source-map-support": "^0.5.10",
+		"ts-node": "^8.0.2",
+		"tslint": "^5.13.1",
+		"tslint-config-prettier": "^1.18.0",
+		"typescript": "^3.3.3333"
+	},
+	"scripts": {
+		"ts-watch": "tsc -w",
+		"ts-build": "tsc",
+		"node-watch": "cross-env NODE_ENV=development nodemon --delay 250 --watch dist ./dist/service.js",
+		"dev": "npm-run-all -p ts-watch node-watch",
+		"mocha": "mocha",
+		"test": "nyc mocha test/*.ts",
+		"start": "cross-env NODE_ENV=production node ./dist/service.js",
+		"build": "npm run ts-build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mharj/express-base-api-ts.git"
+	},
+	"nyc": {
+		"extension": [
+			".ts"
+		],
+		"include": [
+			"src"
+		],
+		"reporter": [
+			"text",
+			"html"
+		],
+		"all": true
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mharj/express-base-api-ts/issues"
+	},
+	"homepage": "https://github.com/mharj/express-base-api-ts#readme"
 }
