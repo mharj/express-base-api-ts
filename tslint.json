@@ -12,7 +12,10 @@
 	},
 	"rules": {
 		"no-console": false,
-		"linebreak-style": [true, "LF"],
+		"linebreak-style": [
+			true,
+			"LF"
+		],
 		"deprecation": true,
 		"no-require-imports": true
 	}

@@ -13,7 +13,6 @@ export const etagBuilder = (data: number | string | object, options?: etag.Optio
 		etagData = etag(JSON.stringify(data), options);
 	}
 	if (etag && etagData) {
-		etagData = etagData.substring(1, etagData.length - 1); // clean etag double quotes
 		return etagData;
 	}
 	return undefined;
@@ -21,39 +20,31 @@ export const etagBuilder = (data: number | string | object, options?: etag.Optio
 
 export const ifNoneMatch = (req: Request, etagHash: string, isNotSet: boolean = false) => {
 	if ('if-none-match' in req.headers) {
-		if (Array.isArray(req.headers['if-none-match'])) {
-			let found = false;
-			const etagHeaders = req.headers['if-none-match'] as string[];
-			etagHeaders.forEach((etagHeader) => {
-				if (etagHash === etagHeader) {
-					found = true;
-				}
-			});
-			return found;
-		} else {
-			const etagHeader = req.headers['if-none-match'] as string;
-			return etagHash === etagHeader;
-		}
+		return isValueMatch(req.headers['if-none-match'], etagHash);
 	} else {
 		return isNotSet;
 	}
 };
 
+export const isValueMatch = (input: string[] | string | undefined, value: string | undefined): boolean => {
+	if (input === undefined || value === undefined) {
+		return false;
+	}
+	if (Array.isArray(input)) {
+		let found = false;
+		input.forEach((i) => {
+			if (i === value) {
+				found = true;
+			}
+		});
+		return found;
+	} else {
+		return value === input;
+	}
+};
 export const ifMatch = (req: Request, etagHash: string | undefined, isNotSet: boolean = true): boolean => {
 	if ('if-match' in req.headers) {
-		if (Array.isArray(req.headers['if-match'])) {
-			let found = false;
-			const etagHeaders = req.headers['if-match'] as string[];
-			etagHeaders.forEach((etagHeader) => {
-				if (etagHash === etagHeader) {
-					found = true;
-				}
-			});
-			return found;
-		} else {
-			const etagHeader = req.headers['if-match'] as string;
-			return etagHash === etagHeader;
-		}
+		return isValueMatch(req.headers['if-match'], etagHash);
 	} else {
 		return isNotSet;
 	}
@@ -79,13 +70,10 @@ export const handleEtagResponse = (data: object, res: Response) => {
 	res.end();
 };
 
-export const handleIfNoneMatch = (data: object, req: Request, res: Response, headers?: Headers) => {
+export const handleIfNoneMatch = (data: object, req: Request, res: Response) => {
 	const etagHash = etagBuilder(data);
 	if (etagHash && ifNoneMatch(req, etagHash) === true) {
 		return res.status(304).send('Not Modified');
-	}
-	if (headers) {
-		headers.forEach((value, key) => res.setHeader(key, value));
 	}
 	if (etagHash) {
 		res.setHeader('ETag', etagHash);

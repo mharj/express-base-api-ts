@@ -5,31 +5,42 @@ const router = Router();
 
 // list
 router.get('/', async (req: Request, res: Response) => {
-	const data = [{msg: 'hello world'}];
+	const data = [{item: 'hello world'}];
 	handleIfNoneMatch(data, req, res);
 });
 
 // read
 router.get('/:id', async (req: Request, res: Response) => {
-	const data = {msg: 'hello world'};
-	if (!data) {
+	const data = {item: 'hello world'};
+	if (req.params.id !== 'item') {
 		return res.status(404).end(); // 'Not Found'
 	}
 	handleIfNoneMatch(data, req, res);
 });
 
 // create
+// to help CORS pre-flight caching we can use POST as single item GET
 router.post('/', async (req: Request, res: Response) => {
-	const data = {msg: req.body.data};
-	// check if dub, else 409 'Conflict'
-	// save data
-	res.status(201); // 'Created'
-	handleEtagResponse(data, res);
+	const {_id} = req.body;
+	if (_id !== undefined) {
+		const data = {item: 'hello world'};
+		if (_id !== 'item') {
+			return res.status(404).end(); // 'Not Found'
+		} else {
+			handleIfNoneMatch(data, req, res);
+		}
+	} else {
+		const data = req.body;
+		// check if dub, else 409 'Conflict'
+		// save data
+		res.status(201); // 'Created'
+		handleEtagResponse(data, res);
+	}
 });
 
 // modify
 router.put('/:id', async (req: Request, res: Response) => {
-	const data = {msg: 'hello world'};
+	const data = req.body;
 	if (!data) {
 		return res.status(404).end(); // 'Not Found'
 	}
@@ -43,8 +54,8 @@ router.put('/:id', async (req: Request, res: Response) => {
 
 // delete
 router.delete('/:id', async (req: Request, res: Response) => {
-	const data = {msg: 'hello world'};
-	if (!data) {
+	const data = {item: 'hello world'};
+	if (req.params.id !== 'item') {
 		return res.status(404).end(); // 'Not Found'
 	}
 	// check if data was already modified by someone else
