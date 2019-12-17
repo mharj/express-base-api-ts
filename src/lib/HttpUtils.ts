@@ -1,16 +1,27 @@
 import * as etag from 'etag';
 import {Request, Response} from 'express';
 
-export const etagBuilder = (data: number | string | object, options?: etag.Options): string | undefined => {
+export const etagBuilder = (data: Buffer | number | string | object | boolean | null | undefined, options?: etag.Options): string | undefined => {
 	let etagData = null;
-	if (typeof data === 'number') {
-		etagData = etag('' + data, options);
+	if (data === null || data === undefined) {
+		return undefined;
 	}
-	if (typeof data === 'string') {
-		etagData = etag(data, options);
+	if (data instanceof Buffer ) {
+		return etag(data, options);
 	}
-	if (typeof data === 'object') {
-		etagData = etag(JSON.stringify(data), options);
+	switch (typeof data) {
+		case 'number':
+			etagData = etag('' + data, options);
+			break;
+		case 'boolean':
+			etagData = etag(data ? 'true' : 'false', options);
+			break;
+		case 'string':
+			etagData = etag(data, options);
+			break;
+		case 'object':
+			etagData = etag(JSON.stringify(data), options);
+			break;
 	}
 	if (etag && etagData) {
 		return etagData;
