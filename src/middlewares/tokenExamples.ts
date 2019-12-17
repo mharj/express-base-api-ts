@@ -30,7 +30,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 		if (!token) {
 			throw new Error('Missing token');
 		}
-		req.token = jwt.verify(token, process.env.JWT_SECRET, {issuer: TOKEN_ISSUER});
+		req.token = jwt.verify(token, process.env.JWT_SECRET || 'some_secret_key', {issuer: TOKEN_ISSUER}) as IAccessToken;
 		next();
 	} catch (err) {
 		res.status(401).json({

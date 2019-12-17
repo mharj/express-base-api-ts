@@ -18,7 +18,7 @@ export const etagBuilder = (data: number | string | object, options?: etag.Optio
 	return undefined;
 };
 
-export const ifNoneMatch = (req: Request, etagHash: string, isNotSet: boolean = false) => {
+export const ifNoneMatch = (req: Request, etagHash: string, isNotSet: boolean = false): boolean => {
 	if ('if-none-match' in req.headers) {
 		return isValueMatch(req.headers['if-none-match'], etagHash);
 	} else {
