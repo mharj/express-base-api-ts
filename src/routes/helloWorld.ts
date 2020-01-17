@@ -1,7 +1,10 @@
 import {Request, Response, Router} from 'express';
+import {createValidator, ValidatedRequest} from 'express-joi-validation';
 import {handleEtagResponse, handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
+import {IHelloWorldReadSchema, validateHelloWorldRead} from '../validation/helloWorld';
 
 const router = Router();
+const validator = createValidator({});
 
 // list
 router.get('/', async (req: Request, res: Response) => {
@@ -10,7 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // read
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', validator.params(validateHelloWorldRead.params), async (req: ValidatedRequest<IHelloWorldReadSchema>, res: Response) => {
 	const data = {item: 'hello world'};
 	if (req.params.id !== 'item') {
 		return res.status(404).end(); // 'Not Found'
