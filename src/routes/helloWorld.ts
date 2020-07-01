@@ -1,10 +1,18 @@
 import {Request, Response, Router} from 'express';
-import {createValidator, ValidatedRequest} from 'express-joi-validation';
 import {handleEtagResponse, handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
-import {IHelloWorldReadSchema, validateHelloWorldRead} from '../validation/helloWorld';
+import {validateRequest} from '../middlewares/joiValidator';
+import {
+	IHelloWorldCreateRequest,
+	IHelloWorldDeleteRequest,
+	IHelloWorldModifyRequest,
+	IHelloWorldReadRequest,
+	validateHelloWorldCreate,
+	validateHelloWorldDelete,
+	validateHelloWorldModify,
+	validateHelloWorldRead,
+} from '../validation/helloWorld';
 
 const router = Router();
-const validator = createValidator({});
 
 // list
 router.get('/', async (req: Request, res: Response) => {
@@ -13,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // read
-router.get('/:id', validator.params(validateHelloWorldRead.params), async (req: ValidatedRequest<IHelloWorldReadSchema>, res: Response) => {
+router.get('/:id', validateRequest(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response) => {
 	const data = {item: 'hello world'};
 	if (req.params.id !== 'item') {
 		return res.status(404).end(); // 'Not Found'
@@ -23,7 +31,7 @@ router.get('/:id', validator.params(validateHelloWorldRead.params), async (req: 
 
 // create
 // to help CORS pre-flight caching we can use POST as single item GET
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', validateRequest(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response) => {
 	const {_id} = req.body;
 	if (_id !== undefined) {
 		const data = {item: 'hello world'};
@@ -42,7 +50,7 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // modify
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', validateRequest(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response) => {
 	const data = req.body;
 	if (!data) {
 		return res.status(404).end(); // 'Not Found'
@@ -56,7 +64,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 });
 
 // delete
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', validateRequest(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response) => {
 	const data = {item: 'hello world'};
 	if (req.params.id !== 'item') {
 		return res.status(404).end(); // 'Not Found'

@@ -1,13 +1,70 @@
 import * as Joi from '@hapi/joi';
-import {ContainerTypes, ValidatedRequestSchema} from 'express-joi-validation';
+import {Request} from 'express';
 import 'joi-extract-type';
+import {IRequestValidator} from '../middlewares/joiValidator';
 
-export const validateHelloWorldRead = {
-	params: Joi.object<{id: string}>({
+// import {ContainerTypes, ValidatedRequestSchema} from 'express-joi-validation';
+
+// Read
+export interface IHelloWorldReadRequest extends Request {
+	params: {
+		id: string;
+	}
+}
+export const validateHelloWorldRead: IRequestValidator = {
+	params: Joi.object<IHelloWorldReadRequest['params']>({
+		id: Joi.string().required(),
+	}),
+};
+// Create
+export interface IHelloWorldCreateRequest extends Request {
+	body: {
+		_id?: string;
+		item?: string;
+	}
+}
+export const validateHelloWorldCreate: IRequestValidator = {
+	body: Joi.object<IHelloWorldCreateRequest['body']>({
+		_id: Joi.string(),
+		item: Joi.string(),
+	}),
+};
+// modify
+export interface IHelloWorldModifyRequest extends Request {
+	params: {
+		id: string;
+	},
+	body: {
+		item: string;
+	}
+}
+export const validateHelloWorldModify: IRequestValidator = {
+	body: Joi.object<IHelloWorldModifyRequest['body']>({
+		item: Joi.string().required(),
+	}),
+	params: Joi.object<IHelloWorldModifyRequest['params']>({
+		id: Joi.string().required(),
+	}),
+};
+// delete
+export interface IHelloWorldDeleteRequest extends Request {
+	params: {
+		id: string;
+	}
+}
+export const validateHelloWorldDelete: IRequestValidator = {
+	params: Joi.object<IHelloWorldDeleteRequest['params']>({
 		id: Joi.string().required(),
 	}),
 };
 
-export interface IHelloWorldReadSchema extends ValidatedRequestSchema {
-	[ContainerTypes.Params]: Joi.extractType<typeof validateHelloWorldRead>;
-}
+// TODO: fix when 'joi-extract-type' works ok with joi
+/* export interface IHelloWorldReadSchema extends ValidatedRequestSchema {
+	[ContainerTypes.Params]: Joi.extractType<typeof validateHelloWorldRead.params>;
+} */
+
+
+
+
+
+

@@ -65,6 +65,13 @@ describe('api hello', () => {
 				.send(item);
 			expect(res).to.have.status(200);
 		});
+		it('put should not work if wrong data type', async () => {
+			const res = await req
+				.put('/api/hello/item')
+				.send({item: 123});
+			expect(res).to.have.status(400);
+			expect(res.body).to.be.eql({error: '\"item\" must be a string'});
+		});
 		it('put should work without etag', async () => {
 			if (!item) {
 				throw new Error('should have item');
@@ -84,6 +91,13 @@ describe('api hello', () => {
 				.send({_id: 'item'})
 				.set('if-none-match', etag);
 			expect(res).to.have.status(304);
+		});
+		it('should not get data if body id not matching to filter (requires string _id)', async () => {
+			const res = await req
+				.post('/api/hello')
+				.send({_id: 123});
+			expect(res).to.have.status(400);
+			expect(res.body).to.be.eql({error: '\"_id\" must be a string'});
 		});
 	});
 	describe('DELETE', () => {
