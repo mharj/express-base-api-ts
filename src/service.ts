@@ -12,7 +12,9 @@ setupExpress(app);
 app.listen(HTTP_PORT, () => {
 	if (process.env.NODE_ENV !== 'testing') {
 		/* istanbul ignore next */
-		console.log(`[${process.env.NODE_ENV}] service listening on port ${HTTP_PORT}`);
+		console.log(
+			`[${process.env.NODE_ENV}] service listening on port ${process.env.NODE_ENV === 'development' ? 'http://localhost:' + HTTP_PORT : '' + HTTP_PORT}`,
+		);
 	}
 	isRunning = true;
 	// supply unit testing callback

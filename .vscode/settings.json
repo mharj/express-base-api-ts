@@ -1,0 +1,8 @@
+{
+    "mochaExplorer.env": {
+        "TS_NODE_PROJECT": "tsconfig.test.json",
+        "TS_NODE_FILES": "true"
+    },
+    "mochaExplorer.files": "test/**/*.ts",
+    "deno.enable": false
+}
