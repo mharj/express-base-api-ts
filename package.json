@@ -1,7 +1,7 @@
 {
 	"name": "express-base-api-ts",
-	"version": "0.0.1",
-	"description": "",
+	"version": "0.0.2",
+	"description": "base express ts setup",
 	"main": "dist/service.js",
 	"engines": {
 		"engineStrict": "true",
@@ -16,6 +16,8 @@
 		"express-joi-validation": "^5.0.0",
 		"joi-extract-type": "^15.0.8",
 		"jsonwebtoken": "^8.5.1",
+		"log4js": "^6.3.0",
+		"mharj-node-variable-util": "0.0.2",
 		"source-map-support": "^0.5.19",
 		"tslib": "^2.0.3"
 	},
@@ -26,7 +28,7 @@
 		"@types/hapi__joi": "^17.1.6",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mocha": "^8.2.0",
-		"@types/node": "^14.14.12",
+		"@types/node": "^14.14.20",
 		"chai": "^4.2.0",
 		"chai-http": "^4.3.0",
 		"mocha": "^8.2.1",
@@ -44,6 +46,22 @@
 		"mocha": "mocha",
 		"test": "nyc mocha",
 		"start": "cross-env NODE_ENV=production node -r source-map-support/register ./dist/service.js"
+	},
+	"mocha": {
+		"exit": true,
+		"extension": [
+			"ts",
+			"js"
+		],
+		"recursive": true,
+		"require": [
+			"ts-node/register",
+			"source-map-support/register"
+		],
+		"reporters": [
+			"spec",
+			"mocha-junit-reporter"
+		]
 	},
 	"repository": {
 		"type": "git",

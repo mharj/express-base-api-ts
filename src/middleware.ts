@@ -9,6 +9,9 @@ export const setupExpress = (app: Express) => {
 	// body parsers
 	app.use(bodyParser.urlencoded({extended: false}));
 	app.use(bodyParser.json());
+	// apply middlewares here
+	// app.use(corsMiddleware);
 	// routes
 	app.use('/api', routes);
+	// apply error handler here if using nextFunction for errors
 };

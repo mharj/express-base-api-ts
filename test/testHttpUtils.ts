@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'testing';
+process.env.NODE_ENV = 'test';
 import {expect} from 'chai';
 import * as chai from 'chai';
 // tslint:disable-next-line

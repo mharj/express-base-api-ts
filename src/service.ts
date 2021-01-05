@@ -1,37 +1,43 @@
 import * as express from 'express';
-import {Express} from 'express';
-import {HTTP_PORT} from './env';
+import {Server} from 'http';
+import {getHttpPort} from './env';
 import {setupExpress} from './middleware';
-type ExpressCallback = (app: Express) => void;
-let getApplicationCallback: ExpressCallback | undefined;
-let isRunning = false;
-const app = express();
-// keep this base file clean and use setupExpress to configure Express
-setupExpress(app);
-// listener
-app.listen(HTTP_PORT, () => {
-	if (process.env.NODE_ENV !== 'testing') {
-		/* istanbul ignore next */
-		console.log(
-			`[${process.env.NODE_ENV}] service listening on port ${process.env.NODE_ENV === 'development' ? 'http://localhost:' + HTTP_PORT : '' + HTTP_PORT}`,
-		);
-	}
-	isRunning = true;
-	// supply unit testing callback
-	if (getApplicationCallback) {
-		getApplicationCallback(app);
-	}
-});
+import {logger} from './logger';
 
-// function for unit testing to get running Express instance
-export const getExpress = (): Promise<Express> => {
-	if (isRunning) {
-		return Promise.resolve(app);
-	} else {
-		return new Promise((resolve, reject) => {
-			getApplicationCallback = (currentApp) => {
-				resolve(currentApp);
-			};
-		});
-	}
+const app = express();
+
+let server: undefined | Server;
+export const startExpress = (port: string | number): Promise<express.Express> => {
+	setupExpress(app);
+	return new Promise((resolve, reject) => {
+		if (!app) {
+			reject(new Error('no express instance found'));
+		} else {
+			server = app.listen(port, () => {
+				resolve(app);
+			});
+		}
+	});
 };
+
+export const stopExpress = (): Promise<void> => {
+	return new Promise((resolve) => {
+		if (server) {
+			server.close(() => resolve());
+		} else {
+			resolve();
+		}
+	});
+};
+
+export const startAll = async (): Promise<void> => {
+	const httpPort = await getHttpPort();
+	await startExpress(httpPort);
+	logger.info(`backend listening on port ${httpPort} [${process.env.NODE_ENV}]`);
+	// start mongo etc here if mongo is not required to be up before express
+};
+
+// tslint:disable: no-floating-promises
+if (process.env.NODE_ENV !== 'test') {
+	startAll();
+}
