@@ -14,6 +14,7 @@
 		"cross-fetch": "^3.0.6",
 		"express": "^4.17.1",
 		"express-joi-validation": "^5.0.0",
+		"express-validation": "^3.0.8",
 		"joi-extract-type": "^15.0.8",
 		"jsonwebtoken": "^8.5.1",
 		"log4js": "^6.3.0",

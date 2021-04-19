@@ -1,4 +1,4 @@
-import {Request, Response, Router} from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 import {handleEtagResponse, handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
 import {validateRequest} from '../middlewares/joiValidator';
 import {
@@ -15,66 +15,80 @@ import {
 const router = Router();
 
 // list
-router.get('/', async (req: Request, res: Response) => {
-	const data = [{item: 'hello world'}];
-	handleIfNoneMatch(data, req, res);
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const data = [{item: 'hello world'}];
+		handleIfNoneMatch(data, req, res);
+	} catch (err) {
+		// error middleware
+		next(err);
+	}
 });
 
 // read
-router.get('/:id', validateRequest(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response) => {
-	const data = {item: 'hello world'};
-	if (req.params.id !== 'item') {
-		return res.status(404).end(); // 'Not Found'
+router.get('/:id', validateRequest(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response, next: NextFunction) => {
+	try {
+		const data = {item: 'hello world'};
+		if (req.params.id !== 'item') {
+			return res.status(404).end(); // 'Not Found'
+		}
+		handleIfNoneMatch(data, req, res);
+	} catch (err) {
+		// error middleware
+		next(err);
 	}
-	handleIfNoneMatch(data, req, res);
 });
 
 // create
-// to help CORS pre-flight caching we can use POST as single item GET
-router.post('/', validateRequest(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response) => {
-	const {_id} = req.body;
-	if (_id !== undefined) {
-		const data = {item: 'hello world'};
-		if (_id !== 'item') {
-			return res.status(404).end(); // 'Not Found'
-		} else {
-			handleIfNoneMatch(data, req, res);
-		}
-	} else {
+router.post('/', validateRequest(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response, next: NextFunction) => {
+	try {
 		const data = req.body;
 		// check if dub, else 409 'Conflict'
 		// save data
 		res.status(201); // 'Created'
 		handleEtagResponse(data, res);
+	} catch (err) {
+		// error middleware
+		next(err);
 	}
 });
 
 // modify
-router.put('/:id', validateRequest(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response) => {
-	const data = req.body;
-	if (!data) {
-		return res.status(404).end(); // 'Not Found'
+router.put('/:id', validateRequest(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response, next: NextFunction) => {
+	try {
+		const data = req.body;
+		if (!data) {
+			return res.status(404).end(); // 'Not Found'
+		}
+		// check if data was already modified by someone else
+		if (!ifMatchCheck(data, req)) {
+			return res.status(409).end(); // 'Conflict'
+		}
+		// update data
+		handleEtagResponse(data, res);
+	} catch (err) {
+		// error middleware
+		next(err);
 	}
-	// check if data was already modified by someone else
-	if (!ifMatchCheck(data, req)) {
-		return res.status(409).end(); // 'Conflict'
-	}
-	// update data
-	handleEtagResponse(data, res);
 });
 
 // delete
-router.delete('/:id', validateRequest(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response) => {
-	const data = {item: 'hello world'};
-	if (req.params.id !== 'item') {
-		return res.status(404).end(); // 'Not Found'
+router.delete('/:id', validateRequest(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response, next: NextFunction) => {
+	try {
+		const data = {item: 'hello world'};
+		if (req.params.id !== 'item') {
+			return res.status(404).end(); // 'Not Found'
+		}
+		// check if data was already modified by someone else
+		if (!ifMatchCheck(data, req)) {
+			return res.status(409).end(); // 'Conflict'
+		}
+		// delete data
+		res.status(204).end(); // 'No Content'
+	} catch (err) {
+		// error middleware
+		next(err);
 	}
-	// check if data was already modified by someone else
-	if (!ifMatchCheck(data, req)) {
-		return res.status(409).end(); // 'Conflict'
-	}
-	// delete data
-	res.status(204).end(); // 'No Content'
 });
 
 export const route = router;

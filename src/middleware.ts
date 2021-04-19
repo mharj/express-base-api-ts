@@ -1,5 +1,7 @@
 import * as bodyParser from 'body-parser';
 import {Express} from 'express';
+import {HttpError} from './lib/HttpError';
+import {errorMiddleWare} from './middlewares/errorMiddleware';
 import {routes} from './routes';
 
 export const setupExpress = (app: Express) => {
@@ -13,5 +15,9 @@ export const setupExpress = (app: Express) => {
 	// app.use(corsMiddleware);
 	// routes
 	app.use('/api', routes);
-	// apply error handler here if using nextFunction for errors
+	// error handling
+	app.get('*', (req, res, next) => {
+		next(new HttpError(404, 'route_not_found'));
+	});
+	app.use(errorMiddleWare);
 };

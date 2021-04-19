@@ -7,6 +7,7 @@ import {Express} from 'express';
 import 'mocha';
 import {startExpress, stopExpress} from '../src/service';
 import {getHttpPort} from '../src/env';
+import {catchHttpError} from './lib/superagentError';
 
 let req: ChaiHttp.Agent;
 let app: Express | undefined;
@@ -22,6 +23,7 @@ describe('api hello', () => {
 	describe('GET', () => {
 		it('should get hello world list', async () => {
 			const res = await req.get('/api/hello');
+			catchHttpError(res);
 			expect(res).to.have.status(200);
 			expect(res.body).to.be.eql([{item: 'hello world'}]);
 			expect(res).to.have.header('etag');
@@ -30,10 +32,12 @@ describe('api hello', () => {
 
 		it('should get 304 to get hello world list with etag', async () => {
 			const res = await req.get('/api/hello').set('if-none-match', etag);
+			catchHttpError(res);
 			expect(res).to.have.status(304);
 		});
 		it('should get hello world', async () => {
 			const res = await req.get('/api/hello/item');
+			catchHttpError(res);
 			expect(res).to.have.status(200);
 			expect(res.body).to.be.eql({item: 'hello world'});
 			expect(res).to.have.header('etag');
@@ -42,6 +46,7 @@ describe('api hello', () => {
 		});
 		it('should get 304 not modified if correct etag', async () => {
 			const res = await req.get('/api/hello/item').set('if-none-match', etag);
+			catchHttpError(res);
 			expect(res).to.have.status(304);
 		});
 	});
@@ -58,6 +63,7 @@ describe('api hello', () => {
 				throw new Error('should have item');
 			}
 			const res = await req.put('/api/hello/item').set('if-match', etag).send(item);
+			catchHttpError(res);
 			expect(res).to.have.status(200);
 		});
 		it('put should not work if wrong data type', async () => {
@@ -70,22 +76,15 @@ describe('api hello', () => {
 				throw new Error('should have item');
 			}
 			const res = await req.put('/api/hello/item').send(item);
+			catchHttpError(res);
 			expect(res).to.have.status(200);
 		});
 	});
 	describe('POST', () => {
 		it('should POST data and get 201 code', async () => {
 			const res = await req.post('/api/hello').send({item: 'value'});
+			catchHttpError(res);
 			expect(res).to.have.status(201);
-		});
-		it('should get 304 not modified if getting item with correct etag (CORS optimization)', async () => {
-			const res = await req.post('/api/hello').send({_id: 'item'}).set('if-none-match', etag);
-			expect(res).to.have.status(304);
-		});
-		it('should not get data if body id not matching to filter (requires string _id)', async () => {
-			const res = await req.post('/api/hello').send({_id: 123});
-			expect(res).to.have.status(400);
-			expect(res.body).to.be.eql({error: '"_id" must be a string'});
 		});
 	});
 	describe('DELETE', () => {

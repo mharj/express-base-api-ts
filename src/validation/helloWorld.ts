@@ -19,13 +19,11 @@ export const validateHelloWorldRead: IRequestValidator<IHelloWorldReadRequest> =
 // Create
 export interface IHelloWorldCreateRequest extends Request {
 	body: {
-		_id?: string;
 		item?: string;
 	};
 }
 export const validateHelloWorldCreate: IRequestValidator<IHelloWorldCreateRequest> = {
 	body: Joi.object<IHelloWorldCreateRequest['body']>({
-		_id: Joi.string(),
 		item: Joi.string(),
 	}),
 };

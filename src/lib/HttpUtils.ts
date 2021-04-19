@@ -23,7 +23,7 @@ export const etagBuilder = (data: Buffer | number | string | object | boolean | 
 			etagData = etag(JSON.stringify(data), options);
 			break;
 	}
-	if (etag && etagData) {
+	if (etagData) {
 		return etagData;
 	}
 	return undefined;
