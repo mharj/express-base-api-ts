@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import {handleEtagResponse, handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
-import {validateRequest} from '../middlewares/joiValidator';
+import {validate} from 'express-validation';
 import {
 	IHelloWorldCreateRequest,
 	IHelloWorldDeleteRequest,
@@ -26,7 +26,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // read
-router.get('/:id', validateRequest(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response, next: NextFunction) => {
+router.get('/:id', validate(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = {item: 'hello world'};
 		if (req.params.id !== 'item') {
@@ -40,7 +40,7 @@ router.get('/:id', validateRequest(validateHelloWorldRead), async (req: IHelloWo
 });
 
 // create
-router.post('/', validateRequest(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response, next: NextFunction) => {
+router.post('/', validate(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = req.body;
 		// check if dub, else 409 'Conflict'
@@ -54,7 +54,7 @@ router.post('/', validateRequest(validateHelloWorldCreate), async (req: IHelloWo
 });
 
 // modify
-router.put('/:id', validateRequest(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response, next: NextFunction) => {
+router.put('/:id', validate(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = req.body;
 		if (!data) {
@@ -73,7 +73,7 @@ router.put('/:id', validateRequest(validateHelloWorldModify), async (req: IHello
 });
 
 // delete
-router.delete('/:id', validateRequest(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response, next: NextFunction) => {
+router.delete('/:id', validate(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = {item: 'hello world'};
 		if (req.params.id !== 'item') {

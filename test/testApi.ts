@@ -68,8 +68,8 @@ describe('api hello', () => {
 		});
 		it('put should not work if wrong data type', async () => {
 			const res = await req.put('/api/hello/item').send({item: 123});
-			expect(res).to.have.status(400);
-			expect(res.body).to.be.eql({error: '"item" must be a string'});
+			expect(res).to.have.status(500);
+			expect(res.body).to.be.eql({description: 'Validation Failed', error: 'ValidationError', trace: ['body: \"item\" must be a string']});
 		});
 		it('put should work without etag', async () => {
 			if (!item) {

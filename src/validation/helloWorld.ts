@@ -1,7 +1,6 @@
 import * as Joi from '@hapi/joi';
 import {Request} from 'express';
 import 'joi-extract-type';
-import {IRequestValidator} from '../middlewares/joiValidator';
 
 // import {ContainerTypes, ValidatedRequestSchema} from 'express-joi-validation';
 
@@ -11,7 +10,7 @@ export interface IHelloWorldReadRequest extends Request {
 		id: string;
 	};
 }
-export const validateHelloWorldRead: IRequestValidator<IHelloWorldReadRequest> = {
+export const validateHelloWorldRead = {
 	params: Joi.object<IHelloWorldReadRequest['params']>({
 		id: Joi.string().required(),
 	}),
@@ -22,7 +21,7 @@ export interface IHelloWorldCreateRequest extends Request {
 		item?: string;
 	};
 }
-export const validateHelloWorldCreate: IRequestValidator<IHelloWorldCreateRequest> = {
+export const validateHelloWorldCreate = {
 	body: Joi.object<IHelloWorldCreateRequest['body']>({
 		item: Joi.string(),
 	}),
@@ -36,7 +35,7 @@ export interface IHelloWorldModifyRequest extends Request {
 		item: string;
 	};
 }
-export const validateHelloWorldModify: IRequestValidator<IHelloWorldModifyRequest> = {
+export const validateHelloWorldModify = {
 	body: Joi.object<IHelloWorldModifyRequest['body']>({
 		item: Joi.string().required(),
 	}),
@@ -50,7 +49,7 @@ export interface IHelloWorldDeleteRequest extends Request {
 		id: string;
 	};
 }
-export const validateHelloWorldDelete: IRequestValidator<IHelloWorldDeleteRequest> = {
+export const validateHelloWorldDelete = {
 	params: Joi.object<IHelloWorldDeleteRequest['params']>({
 		id: Joi.string().required(),
 	}),
