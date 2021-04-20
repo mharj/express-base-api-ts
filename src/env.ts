@@ -3,12 +3,11 @@ import {logger} from './logger';
 // logger for variable util
 setLogger(logger);
 
-// do similar setups for all configurations
-let httpPortValue: string | undefined;
+// do similar setups for all configuration items
+let httpPort: string | undefined;
 export async function getHttpPort(): Promise<string> {
-	if (httpPortValue) {
-		return httpPortValue;
+	if (!httpPort) {
+		httpPort = await getConfigVariable('PORT', '3001', {showValue: true});
 	}
-	httpPortValue = await getConfigVariable('PORT', '3001', {showValue: true});
-	return httpPortValue;
+	return httpPort;
 }
