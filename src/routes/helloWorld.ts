@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response, Router} from 'express';
-import {handleEtagResponse, handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
+import {handleIfNoneMatch, ifMatchCheck} from '../lib/HttpUtils';
 import {validate} from 'express-validation';
 import {
 	IHelloWorldCreateRequest,
@@ -11,49 +11,64 @@ import {
 	validateHelloWorldModify,
 	validateHelloWorldRead,
 } from '../validation/helloWorld';
+import {IApiHello, IApiHelloDetail} from '../interfaces/hello';
 
 const router = Router();
 
-// list
+/** this converts db model to actual API specific data model */
+function buildList(model: {item: string}): IApiHello {
+	return {
+		item: model.item,
+	};
+}
+
+/** this converts db model to actual API specific data model */
+function buildDetail(model: {item: string}): IApiHelloDetail {
+	return {
+		item: model.item,
+	};
+}
+
+// list: GET /api/hello 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const data = [{item: 'hello world'}];
-		handleIfNoneMatch(data, req, res);
+		handleIfNoneMatch(data.map(buildList), req, res);
 	} catch (err) {
 		// error middleware
 		next(err);
 	}
 });
 
-// read
+// read: GET /api/hello/:id
 router.get('/:id', validate(validateHelloWorldRead), async (req: IHelloWorldReadRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = {item: 'hello world'};
 		if (req.params.id !== 'item') {
 			return res.status(404).end(); // 'Not Found'
 		}
-		handleIfNoneMatch(data, req, res);
+		handleIfNoneMatch(buildDetail(data), req, res);
 	} catch (err) {
 		// error middleware
 		next(err);
 	}
 });
 
-// create
+// create: POST /api/hello
 router.post('/', validate(validateHelloWorldCreate), async (req: IHelloWorldCreateRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = req.body;
 		// check if dub, else 409 'Conflict'
 		// save data
 		res.status(201); // 'Created'
-		handleEtagResponse(data, res);
+		handleIfNoneMatch(buildDetail(data), req, res);
 	} catch (err) {
 		// error middleware
 		next(err);
 	}
 });
 
-// modify
+// modify: PUT /api/hello/:id (with ETag validation that model didn't change before modify)
 router.put('/:id', validate(validateHelloWorldModify), async (req: IHelloWorldModifyRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = req.body;
@@ -65,14 +80,14 @@ router.put('/:id', validate(validateHelloWorldModify), async (req: IHelloWorldMo
 			return res.status(409).end(); // 'Conflict'
 		}
 		// update data
-		handleEtagResponse(data, res);
+		handleIfNoneMatch(buildDetail(data), req, res);
 	} catch (err) {
 		// error middleware
 		next(err);
 	}
 });
 
-// delete
+// delete: DELETE /api/hello/:id
 router.delete('/:id', validate(validateHelloWorldDelete), async (req: IHelloWorldDeleteRequest, res: Response, next: NextFunction) => {
 	try {
 		const data = {item: 'hello world'};

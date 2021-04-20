@@ -9,6 +9,6 @@ export async function getHttpPort(): Promise<string> {
 	if (httpPortValue) {
 		return httpPortValue;
 	}
-	httpPortValue = await getConfigVariable('PORT', '3001');
+	httpPortValue = await getConfigVariable('PORT', '3001', {showValue: true});
 	return httpPortValue;
 }

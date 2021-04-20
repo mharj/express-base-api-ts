@@ -18,12 +18,12 @@ export const validateHelloWorldRead = {
 // Create
 export interface IHelloWorldCreateRequest extends Request {
 	body: {
-		item?: string;
+		item: string;
 	};
 }
 export const validateHelloWorldCreate = {
 	body: Joi.object<IHelloWorldCreateRequest['body']>({
-		item: Joi.string(),
+		item: Joi.string().required(),
 	}),
 };
 // modify
