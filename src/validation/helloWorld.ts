@@ -1,33 +1,32 @@
-import * as Joi from '@hapi/joi';
-import {Request} from 'express';
-import 'joi-extract-type';
-
-// import {ContainerTypes, ValidatedRequestSchema} from 'express-joi-validation';
+import * as Joi from 'joi';
+import {ValidatedRequestSchema} from 'express-joi-validation';
 
 // Read
-export interface IHelloWorldReadRequest extends Request {
+export interface HelloWorldReadRequest extends ValidatedRequestSchema {
 	params: {
 		id: string;
 	};
 }
 export const validateHelloWorldRead = {
-	params: Joi.object<IHelloWorldReadRequest['params']>({
+	params: Joi.object<HelloWorldReadRequest['params']>({
 		id: Joi.string().required(),
 	}),
 };
+
 // Create
-export interface IHelloWorldCreateRequest extends Request {
+export interface HelloWorldCreateRequest extends ValidatedRequestSchema {
 	body: {
 		item: string;
 	};
 }
 export const validateHelloWorldCreate = {
-	body: Joi.object<IHelloWorldCreateRequest['body']>({
+	body: Joi.object<HelloWorldCreateRequest['body']>({
 		item: Joi.string().required(),
 	}),
 };
+
 // modify
-export interface IHelloWorldModifyRequest extends Request {
+export interface HelloWorldModifyRequest extends ValidatedRequestSchema {
 	params: {
 		id: string;
 	};
@@ -36,26 +35,22 @@ export interface IHelloWorldModifyRequest extends Request {
 	};
 }
 export const validateHelloWorldModify = {
-	body: Joi.object<IHelloWorldModifyRequest['body']>({
+	body: Joi.object<HelloWorldModifyRequest['body']>({
 		item: Joi.string().required(),
 	}),
-	params: Joi.object<IHelloWorldModifyRequest['params']>({
+	params: Joi.object<HelloWorldModifyRequest['params']>({
 		id: Joi.string().required(),
 	}),
 };
+
 // delete
-export interface IHelloWorldDeleteRequest extends Request {
+export interface HelloWorldDeleteRequest extends ValidatedRequestSchema {
 	params: {
 		id: string;
 	};
 }
 export const validateHelloWorldDelete = {
-	params: Joi.object<IHelloWorldDeleteRequest['params']>({
+	params: Joi.object<HelloWorldDeleteRequest['params']>({
 		id: Joi.string().required(),
 	}),
 };
-
-// TODO: fix when 'joi-extract-type' works ok with joi
-/* export interface IHelloWorldReadSchema extends ValidatedRequestSchema {
-	[ContainerTypes.Params]: Joi.extractType<typeof validateHelloWorldRead.params>;
-} */

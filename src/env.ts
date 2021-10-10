@@ -4,10 +4,10 @@ import {logger} from './logger';
 setLogger(logger);
 
 // do similar setups for all configuration items
-let httpPort: string | undefined;
-export async function getHttpPort(): Promise<string> {
-	if (!httpPort) {
-		httpPort = await getConfigVariable('PORT', '3001', {showValue: true});
+let getHttpPortPromise: Promise<string> | undefined;
+export const getHttpPort = (): Promise<string> => {
+	if (!getHttpPortPromise) {
+		getHttpPortPromise = getConfigVariable('PORT', '3001', {showValue: true});
 	}
-	return httpPort;
-}
+	return getHttpPortPromise;
+};

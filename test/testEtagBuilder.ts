@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 process.env.NODE_ENV = 'test';
 import {expect} from 'chai';
 import * as chai from 'chai';
@@ -18,5 +19,6 @@ describe('etagBuilder', () => {
 		expect(etagBuilder(true)).to.be.equal(etag('true'));
 		expect(etagBuilder(false)).to.be.equal(etag('false'));
 		expect(etagBuilder(Buffer.from('6'))).to.be.equal(etag(Buffer.from('6')));
+		expect(etagBuilder(6n)).to.be.equal(etag('' + 6n));
 	});
 });

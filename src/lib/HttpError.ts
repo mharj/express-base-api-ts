@@ -7,10 +7,12 @@ export interface IApiError {
 export class HttpError extends Error {
 	private code: number;
 	private description: string | undefined;
-	constructor(code: number, message: string, description?: string) {
+	private jsonResponse: boolean;
+	constructor(code: number, message: string, description?: string, jsonResponse = true) {
 		super(message);
 		this.name = 'HttpError';
 		this.code = code;
+		this.jsonResponse = jsonResponse;
 		this.description = description;
 		Error.captureStackTrace(this, this.constructor);
 	}
@@ -21,6 +23,10 @@ export class HttpError extends Error {
 
 	public getObject(): IApiError {
 		return {error: this.message, description: this.description};
+	}
+
+	public isJsonResponse(): boolean {
+		return this.jsonResponse;
 	}
 }
 

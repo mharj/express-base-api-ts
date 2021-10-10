@@ -1,3 +1,5 @@
+/* eslint-disable import/first */
+/* eslint-disable no-unused-expressions */
 process.env.NODE_ENV = 'test';
 import {expect} from 'chai';
 import * as chai from 'chai';
@@ -18,10 +20,17 @@ describe('api errors', () => {
 		req = chai.request(app).keepOpen();
 	});
 	describe('GET', () => {
-		it('should get error json', async () => {
+		it('should not get error json', async () => {
 			const res = await req.get('/qweasdqweqwe');
 			expect(res.status).to.be.eq(404);
-			expect(res.body.error).to.be.eq('route_not_found');
+			expect(res.body).to.be.eql({});
+		});
+	});
+	describe('GET', () => {
+		it('should get error json', async () => {
+			const res = await req.get('/api/hello/qweasdqweqwe');
+			expect(res.status).to.be.eq(404);
+			expect(res.body.error).to.be.eq('not found!');
 		});
 	});
 	after(async () => {

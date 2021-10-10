@@ -21,6 +21,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
 			res,
 		);
 	} catch (err) {
+		/* istanbul ignore next */
 		next(err);
 	}
 });

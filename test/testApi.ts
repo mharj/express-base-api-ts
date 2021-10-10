@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable import/first */
+/* eslint-disable sonarjs/no-duplicate-string */
 process.env.NODE_ENV = 'test';
 import {expect} from 'chai';
 import * as chai from 'chai';
@@ -21,6 +24,13 @@ describe('api hello', () => {
 		req = chai.request(app).keepOpen();
 	});
 	describe('GET', () => {
+		it('should get api status', async () => {
+			const res = await req.get('/api/status');
+			catchHttpError(res);
+			expect(res).to.have.status(200);
+			expect(res.body).to.have.all.keys(['database', 'uptime']);
+			expect(res).to.have.header('etag');
+		});
 		it('should get hello world list', async () => {
 			const res = await req.get('/api/hello');
 			catchHttpError(res);
@@ -69,7 +79,7 @@ describe('api hello', () => {
 		it('put should not work if wrong data type', async () => {
 			const res = await req.put('/api/hello/item').send({item: 123});
 			expect(res).to.have.status(500);
-			expect(res.body).to.be.eql({description: 'Validation Failed', error: 'ValidationError', trace: ['body: \"item\" must be a string']});
+			expect(res.body).to.be.eql({description: 'Validation Failed', error: 'ValidationError', trace: ['body: "item" must be a string']});
 		});
 		it('put should work without etag', async () => {
 			if (!item) {
@@ -78,6 +88,10 @@ describe('api hello', () => {
 			const res = await req.put('/api/hello/item').send(item);
 			catchHttpError(res);
 			expect(res).to.have.status(200);
+		});
+		it('put should now work without data', async () => {
+			const res = await req.put('/api/hello/item').send(undefined);
+			expect(res).to.have.status(500);
 		});
 	});
 	describe('POST', () => {
@@ -103,5 +117,6 @@ describe('api hello', () => {
 	});
 	after(async () => {
 		await stopExpress();
+		await stopExpress(); // nyc
 	});
 });

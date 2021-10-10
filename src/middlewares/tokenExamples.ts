@@ -24,7 +24,7 @@ const getBearerToken = (authHeader: string | undefined): string | null => {
  * @param res
  * @param next
  */
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
 	const token = getBearerToken(req.headers.authorization);
 	try {
 		if (!token) {
