@@ -27,11 +27,11 @@
         "@types/hapi__joi": "^17.1.7",
         "@types/jsonwebtoken": "^8.5.5",
         "@types/mocha": "^9.0.0",
-        "@types/node": "^16.10.3",
-        "@typescript-eslint/eslint-plugin": "^4.33.0",
+        "@types/node": "^16.10.5",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
         "chai": "^4.3.4",
         "chai-http": "^4.3.0",
-        "eslint": "^7.32.0",
+        "eslint": "^8.0.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-config-standard": "^16.0.3",
         "eslint-plugin-prettier": "^4.0.0",
@@ -40,8 +40,8 @@
         "nodemon": "^2.0.13",
         "npm-run-all": "^4.1.5",
         "nyc": "^15.1.0",
-        "ts-node": "^10.2.1",
-        "typescript": "^4.4.3"
+        "ts-node": "^10.3.0",
+        "typescript": "^4.4.4"
     },
     "scripts": {
         "build": "tsc",

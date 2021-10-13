@@ -13,3 +13,4 @@ Currently build targets to NodeJS version 12.9.x and later
  - custom "env" module to utilize settings.json/docker secrets and env variables.
  - example API data "builder" functions (against API interfaces)
  - VC devcontainer to easy development without external depndencies
+ - Includes basic container image building
