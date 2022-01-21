@@ -15,7 +15,7 @@
         "express-validation": "^3.0.8",
         "joi": "^17.4.2",
         "jsonwebtoken": "^8.5.1",
-        "log4js": "^6.3.0",
+        "log4js": "^6.4.0",
         "mharj-node-variable-util": "^0.0.5",
         "source-map-support": "^0.5.20",
         "tslib": "^2.3.1"
