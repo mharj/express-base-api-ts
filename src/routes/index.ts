@@ -1,9 +1,13 @@
 import {Router} from 'express';
-import {route as helloWorldRoute} from './helloWorld';
-import {route as statusRoute} from './status';
-const router = Router();
+import {getRouter as getHelloWorldRouter} from './helloWorld';
+import {getRouter as getStatusRouter} from './status';
 
-router.use('/hello', helloWorldRoute);
-router.use('/status', statusRoute);
-
-export const routes = router;
+let router: Router | undefined;
+export function getRouter() {
+	if (!router) {
+		router = Router();
+		router.use('/hello', getHelloWorldRouter());
+		router.use('/status', getStatusRouter());
+	}
+	return router;
+}

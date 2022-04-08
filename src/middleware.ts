@@ -1,7 +1,7 @@
 import {Express, urlencoded, json} from 'express';
 import {HttpError} from './lib/HttpError';
 import {errorMiddleWare} from './middlewares/errorMiddleware';
-import {routes} from './routes';
+import {getRouter} from './routes';
 
 export const setupExpress = (app: Express): void => {
 	// express settings
@@ -13,7 +13,7 @@ export const setupExpress = (app: Express): void => {
 	// apply middlewares here
 	// app.use(corsMiddleware);
 	// routes
-	app.use('/api', routes);
+	app.use('/api', getRouter());
 	// error handling
 	app.get('*', (req, res, next) => {
 		// block json output for unknown routes

@@ -94,5 +94,4 @@ export const handleIfNoneMatch = (data: unknown, req: Request, res: Response): v
 		res.setHeader('ETag', etagHash);
 	}
 	res.json(data);
-	return res.end();
 };

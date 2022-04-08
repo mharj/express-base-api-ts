@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-base-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: express-base-api
+  template:
+    metadata:
+      labels:
+        app: express-base-api
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: express-base-api
+        image: mharjaksregistry.azurecr.io/express-base-api:0.0.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 3001
+          name: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-base-api
+spec:
+  ports:
+  - port: 80
+    targetPort: 3001
+  selector:
+    app: express-base-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-typescript-base
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-typescript-base
+  template:
+    metadata:
+      labels:
+        app: react-typescript-base
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: react-typescript-base
+        image: mharjaksregistry.azurecr.io/react-typescript-base:0.0.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-typescript-base
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: react-typescript-base
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: express-base-api-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: mysecret
+spec:
+  defaultBackend:
+    service:
+      name: react-typescript-base
+      port:
+        number: 80
+  rules:
+  - host: express-demo-api.northeurope.cloudapp.azure.com
+    http:
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: express-base-api
+              port:
+                number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: express-base-api-azure-routing
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: express-demo-api.8f7a378b813b43328bc1.northeurope.aksapp.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: react-typescript-base
+            port: 
+              number: 80
