@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {ifNoneHandler, IfNoneMatchHandlerPromise} from '../lib/HttpUtils';
+import {ifNoneMatchHandler, IfNoneMatchHandlerPromise} from '../lib/HttpUtils';
 
 /**
  * GET /api/status (public)
@@ -16,6 +16,6 @@ const getStatus: IfNoneMatchHandlerPromise<{database: boolean; uptime: number}> 
 
 export function getRouter() {
 	const router = Router();
-	router.get('/', ifNoneHandler('json', getStatus));
+	router.get('/', ifNoneMatchHandler('json', getStatus));
 	return router;
 }

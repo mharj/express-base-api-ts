@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {HttpError} from '../lib/HttpError';
-import {handleEtagResponse, ifMatchCheck, ifNoneHandler, IfNoneMatchHandlerPromise} from '../lib/HttpUtils';
+import {handleEtagResponse, ifMatchCheck, ifNoneMatchHandler, IfNoneMatchHandlerPromise} from '../lib/HttpUtils';
 import {validate} from 'express-validation';
 import {HelloWorldCreateRequestHandler, validateHelloWorldCreate} from '../validation/helloWorld/create';
 import {validateHelloWorldDelete} from '../validation/helloWorld/delete';
@@ -61,10 +61,10 @@ const deleteHello: HelloWorldModifyRequestHandler = async (req, res) => {
 export function getRouter() {
 	const router = Router();
 	// list
-	router.get('/', ifNoneHandler('json', listHello));
+	router.get('/', ifNoneMatchHandler('json', listHello));
 
 	// read
-	router.get('/:id', validate(validateHelloWorldRead), ifNoneHandler('json', getHello));
+	router.get('/:id', validate(validateHelloWorldRead), ifNoneMatchHandler('json', getHello));
 
 	// create
 	router.post('/', validate(validateHelloWorldCreate), createHello);

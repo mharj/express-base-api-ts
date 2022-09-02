@@ -98,7 +98,7 @@ export const handleIfNoneMatch = (data: unknown, req: Request, res: Response): v
 
 export type IfNoneMatchHandlerPromise<Out = unknown, Req extends Request = Request, Res extends Response = Response> = (req: Req, res: Res) => Promise<Out>;
 
-export function ifNoneHandler<Out = unknown, Req extends Request = Request, Res extends Response = Response>(
+export function ifNoneMatchHandler<Out = unknown, Req extends Request = Request, Res extends Response = Response>(
 	payloadType: 'json',
 	payloadCallback: IfNoneMatchHandlerPromise<Out, Req, Res>,
 ): RequestHandler {
