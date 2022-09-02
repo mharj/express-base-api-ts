@@ -30,7 +30,7 @@ describe('api errors', () => {
 		it('should get error json', async () => {
 			const res = await req.get('/api/hello/qweasdqweqwe');
 			expect(res.status).to.be.eq(404);
-			expect(res.body.error).to.be.eq('not found!');
+			expect(res.body.error).to.be.eq('Not Found');
 		});
 	});
 	after(async () => {

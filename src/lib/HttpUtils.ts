@@ -1,5 +1,5 @@
 import * as etag from 'etag';
-import {Request, Response} from 'express';
+import {Request, RequestHandler, Response} from 'express';
 export const etagBuilder = (data: unknown, options?: etag.Options): string | undefined => {
 	let etagData = null;
 	if (data === null || data === undefined) {
@@ -95,3 +95,22 @@ export const handleIfNoneMatch = (data: unknown, req: Request, res: Response): v
 	}
 	res.json(data);
 };
+
+export type IfNoneMatchHandlerPromise<Out = unknown, Req extends Request = Request, Res extends Response = Response> = (req: Req, res: Res) => Promise<Out>;
+
+export function ifNoneHandler<Out = unknown, Req extends Request = Request, Res extends Response = Response>(
+	payloadType: 'json',
+	payloadCallback: IfNoneMatchHandlerPromise<Out, Req, Res>,
+): RequestHandler {
+	return async (req: Req, res: Res, next) => {
+		try {
+			if (payloadType === 'json') {
+				handleIfNoneMatch(await payloadCallback(req, res), req, res);
+				return;
+			}
+			throw new Error('Invalid payload type');
+		} catch (e) {
+			next(e);
+		}
+	};
+}
