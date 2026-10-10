@@ -1,17 +1,10 @@
-/* eslint-disable import/first */
-process.env.NODE_ENV = 'test';
-import {expect} from 'chai';
-import * as chai from 'chai';
-import * as etag from 'etag';
-// tslint:disable-next-line
-import chaiHttp = require('chai-http');
-import 'mocha';
-import {etagBuilder} from '../src/lib/HttpUtils';
+import etag from 'etag';
+import {describe, expect, it} from 'vitest';
+import {etagBuilder} from '../src/lib/HttpUtils.js';
 
-chai.use(chaiHttp);
 describe('etagBuilder', () => {
-	it('should test etagBuilder', async () => {
-		expect(etagBuilder(6)).to.be.equal(etag('' + 6));
+	it('should test etagBuilder', () => {
+		expect(etagBuilder(6)).to.be.equal(etag(`${6}`));
 		expect(etagBuilder('6')).to.be.equal(etag('6'));
 		expect(etagBuilder({six: true})).to.be.equal(etag(JSON.stringify({six: true})));
 		expect(etagBuilder(undefined)).to.be.equal(undefined);
@@ -19,6 +12,6 @@ describe('etagBuilder', () => {
 		expect(etagBuilder(true)).to.be.equal(etag('true'));
 		expect(etagBuilder(false)).to.be.equal(etag('false'));
 		expect(etagBuilder(Buffer.from('6'))).to.be.equal(etag(Buffer.from('6')));
-		expect(etagBuilder(6n)).to.be.equal(etag('' + 6n));
+		expect(etagBuilder(6n)).to.be.equal(etag(`${6n}`));
 	});
 });

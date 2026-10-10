@@ -1,7 +1,7 @@
-import {Express, urlencoded, json} from 'express';
-import {HttpError} from './lib/HttpError';
-import {errorMiddleWare} from './middlewares/errorMiddleware';
-import {getRouter} from './routes';
+import {type Express, json, urlencoded} from 'express';
+import {HttpError} from './lib/HttpError.js';
+import {errorMiddleWare} from './middlewares/errorMiddleware.js';
+import {getRouter} from './routes/index.js';
 
 export const setupExpress = (app: Express): void => {
 	// express settings
@@ -15,7 +15,7 @@ export const setupExpress = (app: Express): void => {
 	// routes
 	app.use('/api', getRouter());
 	// error handling
-	app.get('*', (req, res, next) => {
+	app.get(/(.*)/, (req, _res, next) => {
 		// block json output for unknown routes
 		next(new HttpError(404, 'route_not_found', req.url, false));
 	});

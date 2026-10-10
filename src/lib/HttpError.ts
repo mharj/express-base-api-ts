@@ -8,7 +8,7 @@ export class HttpError extends Error {
 	private code: number;
 	private description: string | undefined;
 	private jsonResponse: boolean;
-	constructor(code: number, message: string, description?: string, jsonResponse = true) {
+	public constructor(code: number, message: string, description?: string, jsonResponse = true) {
 		super(message);
 		this.name = 'HttpError';
 		this.code = code;

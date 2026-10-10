@@ -1,62 +1,83 @@
+import {validateRequest, validateRequestHandler} from '@luolapeikko/express-standard-schema';
 import {Router} from 'express';
-import {HttpError} from '../lib/HttpError';
-import {handleEtagResponse, ifMatchCheck, ifNoneMatchHandler, IfNoneMatchHandlerPromise} from '../lib/HttpUtils';
-import {validate} from 'express-validation';
-import {HelloWorldCreateRequestHandler, validateHelloWorldCreate} from '../validation/helloWorld/create';
-import {validateHelloWorldDelete} from '../validation/helloWorld/delete';
-import {HelloWorldModifyRequestHandler, validateHelloWorldModify} from '../validation/helloWorld/modify';
-import {HelloWorldReadRequest, validateHelloWorldRead} from '../validation/helloWorld/read';
+import {z} from 'zod';
+import {HttpError} from '../lib/HttpError.js';
+import {handleEtagResponse, type IfNoneMatchHandlerPromise, ifMatchCheck, ifNoneMatchHandler} from '../lib/HttpUtils.js';
 
 const item = {item: 'hello world'};
 
-const listHello: IfNoneMatchHandlerPromise<{item: string}[]> = async () => {
-	return [item];
+const listHello: IfNoneMatchHandlerPromise<{item: string}[]> = () => {
+	return Promise.resolve([item]);
 };
 
-const getHello: IfNoneMatchHandlerPromise<{item: string}, HelloWorldReadRequest> = async (req) => {
+const getHello: IfNoneMatchHandlerPromise<{item: string}> = (req) => {
 	if (req.params.id !== 'item') {
 		throw new HttpError(404, 'Not Found');
 	}
-	return item;
+	return Promise.resolve(item);
 };
 
-const createHello: HelloWorldCreateRequestHandler = async (req, res) => {
-	const data = req.body;
-	// check if dub, else 409 'Conflict'
-	// save data
-	res.status(201); // 'Created'
-	handleEtagResponse(data, res);
-};
+const createHello = validateRequestHandler(
+	{
+		body: z.object({
+			item: z.string(),
+		}),
+	},
+	(req, res) => {
+		const data = req.body;
+		// check if dub, else 409 'Conflict'
+		// save data
+		res.status(201); // 'Created'
+		handleEtagResponse(data, res);
+	},
+);
 
-const modifyHello: HelloWorldModifyRequestHandler = async (req, res) => {
-	const data = req.body;
-	if (!data) {
-		res.status(404).end(); // 'Not Found'
-		return;
-	}
-	// check if data was already modified by someone else
-	if (!ifMatchCheck(data, req)) {
-		res.status(409).end(); // 'Conflict'
-		return;
-	}
-	// update data
-	handleEtagResponse(data, res);
-};
+const modifyHello = validateRequestHandler(
+	{
+		params: z.object({
+			id: z.string(),
+		}),
+		body: z.object({
+			item: z.string(),
+		}),
+	},
+	(req, res) => {
+		const data = req.body;
+		if (!data) {
+			res.status(404).end(); // 'Not Found'
+			return;
+		}
+		// check if data was already modified by someone else
+		if (!ifMatchCheck(data, req)) {
+			res.status(409).end(); // 'Conflict'
+			return;
+		}
+		// update data
+		handleEtagResponse(data, res);
+	},
+);
 
-const deleteHello: HelloWorldModifyRequestHandler = async (req, res) => {
-	const data = {item: 'hello world'};
-	if (req.params.id !== 'item') {
-		res.status(404).end(); // 'Not Found'
-		return;
-	}
-	// check if data was already modified by someone else
-	if (!ifMatchCheck(data, req)) {
-		res.status(409).end(); // 'Conflict'
-		return;
-	}
-	// delete data
-	res.status(204).end(); // 'No Content'
-};
+const deleteHello = validateRequestHandler(
+	{
+		params: z.object({
+			id: z.string(),
+		}),
+	},
+	(req, res) => {
+		const data = {item: 'hello world'};
+		if (req.params.id !== 'item') {
+			res.status(404).end(); // 'Not Found'
+			return;
+		}
+		// check if data was already modified by someone else
+		if (!ifMatchCheck(data, req)) {
+			res.status(409).end(); // 'Conflict'
+			return;
+		}
+		// delete data
+		res.status(204).end(); // 'No Content'
+	},
+);
 
 export function getRouter() {
 	const router = Router();
@@ -64,16 +85,24 @@ export function getRouter() {
 	router.get('/', ifNoneMatchHandler('json', listHello));
 
 	// read
-	router.get('/:id', validate(validateHelloWorldRead), ifNoneMatchHandler('json', getHello));
+	router.get(
+		'/:id',
+		validateRequest({
+			params: z.object({
+				id: z.string(),
+			}),
+		}),
+		ifNoneMatchHandler('json', getHello),
+	);
 
 	// create
-	router.post('/', validate(validateHelloWorldCreate), createHello);
+	router.post('/', createHello);
 
 	// modify
-	router.put('/:id', validate(validateHelloWorldModify), modifyHello);
+	router.put('/:id', modifyHello);
 
 	// delete
-	router.delete('/:id', validate(validateHelloWorldDelete), deleteHello);
+	router.delete('/:id', deleteHello);
 
 	return router;
 }

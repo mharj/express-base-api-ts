@@ -5,85 +5,47 @@
     "main": "dist/service.js",
     "engines": {
         "engineStrict": "true",
-        "node": ">=12.9.0"
+        "node": ">=24.0.0"
     },
+    "type": "module",
     "dependencies": {
-        "@avanio/variable-util": "^0.1.0",
-        "@avanio/variable-util-node": "^0.1.0",
-        "cross-env": "^7.0.3",
-        "cross-fetch": "^3.1.5",
-        "express": "^4.18.1",
-        "express-joi-validation": "^5.0.1",
-        "express-validation": "^4.1.0",
-        "joi": "^17.6.0",
-        "jsonwebtoken": "^8.5.1",
-        "log4js": "^6.6.1",
+        "@avanio/variable-util": "^1.5.0",
+        "@avanio/variable-util-node": "^1.5.0",
+        "@luolapeikko/express-standard-schema": "^0.0.14",
+        "cross-env": "^10.1.0",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3",
+        "log4js": "^6.9.1",
         "source-map-support": "^0.5.21",
-        "tslib": "^2.4.0"
+        "tslib": "^2.8.1",
+        "zod": "^4.6.5"
     },
     "devDependencies": {
-        "@types/chai": "^4.3.3",
-        "@types/etag": "^1.8.1",
-        "@types/express": "^4.17.13",
-        "@types/hapi__joi": "^17.1.8",
-        "@types/jsonwebtoken": "^8.5.9",
-        "@types/mocha": "^9.1.1",
-        "@types/node": "^16.11.56",
-        "@typescript-eslint/eslint-plugin": "^5.36.1",
-        "chai": "^4.3.6",
-        "chai-http": "^4.3.0",
-        "eslint": "^8.23.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-sonarjs": "^0.15.0",
-        "mocha": "^10.0.0",
-        "nodemon": "^2.0.19",
+        "@biomejs/biome": "^2.5.15",
+        "@types/etag": "^1.8.4",
+        "@types/express": "^5.0.6",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/node": "^26.6.4",
+        "@vitest/coverage-v8": "^5.0.3",
+        "c8": "^12.0.0",
+        "nodemon": "^3.1.14",
         "npm-run-all": "^4.1.5",
-        "nyc": "^15.1.0",
-        "ts-node": "^10.9.1",
-        "typescript": "^4.8.2"
+        "ttsc": "^0.30.4",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.4",
+        "vitest": "^5.0.3"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsc -p tsconfig.build.json",
         "dev": "cross-env TS_NODE_FILES=true NODE_ENV=development nodemon",
-        "mocha": "mocha",
-        "test": "nyc mocha",
+        "test": "vitest test --typecheck --run --no-isolate --coverage",
         "start": "cross-env NODE_ENV=production node -r source-map-support/register ./dist/service.js",
-        "lint": "eslint src/**/*.ts"
-    },
-    "mocha": {
-        "exit": true,
-        "extension": [
-            "ts",
-            "js"
-        ],
-        "recursive": true,
-        "require": [
-            "ts-node/register",
-            "source-map-support/register"
-        ],
-        "reporters": [
-            "spec",
-            "mocha-junit-reporter"
-        ]
+        "lint": "biome check",
+        "validate": "tsc --noEmit"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/mharj/express-base-api-ts.git"
-    },
-    "nyc": {
-        "extension": [
-            ".ts"
-        ],
-        "include": [
-            "src"
-        ],
-        "reporter": [
-            "text",
-            "html"
-        ],
-        "all": true
     },
     "author": "",
     "license": "ISC",

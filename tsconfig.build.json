@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ES2022",
+    "lib": ["es2022"],
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "node16",
+    "sourceRoot": "./src",
+    "types": ["node"],
+    "declaration": true,
+    "removeComments": false,
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "importHelpers": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "strict": true
+  },
+  "include": ["src"],
+  "exclude": ["test", "dist", "node_modules"]
+}

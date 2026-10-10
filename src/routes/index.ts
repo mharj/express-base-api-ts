@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import {getRouter as getHelloWorldRouter} from './helloWorld';
-import {getRouter as getStatusRouter} from './status';
+import {getRouter as getHelloWorldRouter} from './helloWorld.js';
+import {getRouter as getStatusRouter} from './status.js';
 
 let router: Router | undefined;
 export function getRouter() {

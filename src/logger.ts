@@ -1,6 +1,6 @@
-import {getLogger} from 'log4js';
+import log4js from 'log4js';
 
-export const logger = getLogger('console');
+export const logger = log4js.getLogger('console');
 
 /* istanbul ignore next */
 const getLoggerLevel = (): string => {

@@ -1,18 +1,16 @@
-import {setLogger, getConfigVariable} from '@avanio/variable-util';
-import {env} from '@avanio/variable-util/dist/loaders/EnvConfigLoader';
+import {ConfigMap, EnvConfigLoader, stringParser} from '@avanio/variable-util';
 import {DockerSecretsConfigLoader, FileConfigLoader} from '@avanio/variable-util-node';
-import {logger} from './logger';
-// logger for variable util
-setLogger(logger);
+import {logger} from './logger.js';
 
-const dockerEnv = new DockerSecretsConfigLoader({fileLowerCase: true}).getLoader;
-const fileEnv = new FileConfigLoader({fileName: './settings.json', type: 'json'}).getLoader;
+const dockerEnv = new DockerSecretsConfigLoader({fileLowerCase: true});
+const fileEnv = new FileConfigLoader({fileName: './settings.json', fileType: 'json'});
 
-// do similar setups for all configuration items
-let getHttpPortPromise: Promise<string> | undefined;
-export const getHttpPort = (): Promise<string> => {
-	if (!getHttpPortPromise) {
-		getHttpPortPromise = getConfigVariable('PORT', [env(), fileEnv(), dockerEnv()], '3001', {showValue: true});
-	}
-	return getHttpPortPromise;
-};
+export const Env = new ConfigMap<{
+	PORT: string;
+}>(
+	{
+		PORT: {parser: stringParser(), defaultValue: '3001', params: {showValue: true}},
+	},
+	[new EnvConfigLoader(), fileEnv, dockerEnv],
+	{logger},
+);

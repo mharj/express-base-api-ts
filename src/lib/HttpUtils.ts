@@ -1,6 +1,6 @@
-import * as etag from 'etag';
-import {Request, RequestHandler, Response} from 'express';
-export const etagBuilder = (data: unknown, options?: etag.Options): string | undefined => {
+import etag from 'etag';
+import type {Request, RequestHandler, Response} from 'express';
+export function etagBuilder(data: unknown, options?: etag.Options): string | undefined {
 	let etagData = null;
 	if (data === null || data === undefined) {
 		return undefined;
@@ -10,10 +10,10 @@ export const etagBuilder = (data: unknown, options?: etag.Options): string | und
 	}
 	switch (typeof data) {
 		case 'number':
-			etagData = etag('' + data, options);
+			etagData = etag(`${data}`, options);
 			break;
 		case 'bigint':
-			etagData = etag('' + data, options);
+			etagData = etag(`${data}`, options);
 			break;
 		case 'boolean':
 			etagData = etag(data ? 'true' : 'false', options);
@@ -30,7 +30,7 @@ export const etagBuilder = (data: unknown, options?: etag.Options): string | und
 	}
 	/* istanbul ignore next */
 	return undefined;
-};
+}
 
 export const ifNoneMatch = (req: Request, etagHash: string, isNotSet = false): boolean => {
 	if ('if-none-match' in req.headers) {
@@ -102,10 +102,10 @@ export function ifNoneMatchHandler<Out = unknown, Req extends Request = Request,
 	payloadType: 'json',
 	payloadCallback: IfNoneMatchHandlerPromise<Out, Req, Res>,
 ): RequestHandler {
-	return async (req: Req, res: Res, next) => {
+	return async (req, res, next) => {
 		try {
 			if (payloadType === 'json') {
-				handleIfNoneMatch(await payloadCallback(req, res), req, res);
+				handleIfNoneMatch(await payloadCallback(req as Req, res as Res), req, res);
 				return;
 			}
 			throw new Error('Invalid payload type');

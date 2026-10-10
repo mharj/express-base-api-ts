@@ -1,18 +1,8 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable import/first */
-process.env.NODE_ENV = 'test';
-import {Response} from 'express';
-import {expect} from 'chai';
-import * as chai from 'chai';
-// tslint:disable-next-line
-import chaiHttp = require('chai-http');
-import 'mocha';
-import {handleEtagResponse, isValueMatch} from '../src/lib/HttpUtils';
-import {HttpError, isHttpError} from '../src/lib/HttpError';
+import type {Response} from 'express';
+import {describe, expect, it} from 'vitest';
+import {HttpError, isHttpError} from '../src/lib/HttpError.js';
+import {handleEtagResponse, isValueMatch} from '../src/lib/HttpUtils.js';
 
-chai.use(chaiHttp);
 describe('http utils', () => {
 	it('isValueMatch', () => {
 		expect(isValueMatch('test', 'test')).to.be.equal(true);
@@ -31,8 +21,8 @@ describe('http utils', () => {
 	});
 	it('test handleEtagResponse', () => {
 		const res = {
-			setHeader: (key: string, value: string) => {},
-			json: (data: unknown) => {},
+			setHeader: (_key: string, _value: string) => {},
+			json: (_data: unknown) => {},
 			end: () => {},
 		} as unknown as Response;
 		handleEtagResponse('test', res);

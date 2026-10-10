@@ -1,8 +1,8 @@
-import * as express from 'express';
-import {Server} from 'http';
-import {getHttpPort} from './env';
-import {setupExpress} from './middleware';
-import {logger} from './logger';
+import express from 'express';
+import type {Server} from 'http';
+import {Env} from './env.js';
+import {logger} from './logger.js';
+import {setupExpress} from './middleware.js';
 
 const app = express();
 
@@ -41,7 +41,7 @@ export const stopExpress = (): Promise<void> => {
 
 /* istanbul ignore next */
 export const startAll = async (): Promise<void> => {
-	const httpPort = await getHttpPort();
+	const httpPort = await Env.get('PORT');
 	await startExpress(httpPort);
 	logger.info(`backend listening on port ${httpPort} [${process.env.NODE_ENV}]`);
 	// start mongo etc here if mongo is not required to be up before express
